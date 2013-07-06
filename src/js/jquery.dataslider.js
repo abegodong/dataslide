@@ -1,7 +1,7 @@
 /* global jQuery */
 ;(function( $ ) {
     "use strict";
-    var dataslider = function(el, opts) {
+    var Dataslider = function(el, opts) {
         var slider = {
             //Set Animation effects variables
             animations: {
@@ -110,10 +110,7 @@
                     }
                 });
                 //Handle button
-                if (slider.root.data("options").useButtons === "hover" || slider.root.data("options").useButtons === true) {
-
-                }
-                else if (slider.root.data("options").useButtons === "always") {
+                if (slider.root.data("options").useButtons === "always") {
                     slider.showButton();
                 }
                 slider.buildNavs();
@@ -236,7 +233,7 @@
         }
         slider.init(el);
 
-    }
+    };
     $.fn.dataslide = function(options) {
         options = $.extend( {
             useTitle: true,
@@ -253,8 +250,8 @@
             hoverPause: true,
             extraAnimations: false
         }, options);
-        return this.each(function () {
-            var instance = new dataslider($(this), options);
+        this.each(function () {
+            new Dataslider($(this), options);
         });
     };
 })(jQuery);

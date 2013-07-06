@@ -63,6 +63,10 @@
     list-style: none inside none;
     z-index: 100;
 }
+#slide2 .nav-wrap {
+    top: auto;
+    bottom: 10px;
+}
 .nav {
     display: inline-block;
     float: left;

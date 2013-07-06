@@ -9,7 +9,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $("#slide").dataslide();
-            $("#slide2").dataslide();
+            $("#slide2").dataslide( { useButtons: false } );
         });
     </script>
 </head>
@@ -36,10 +36,6 @@
     <a href="www.google.com" data-transition="slideLeft">Google</a>
 </div>
 <div id="slide2" style="width: 950px; height: 510px;">
-    <div data-x="0" data-y="0" data-group="1" data-transition="slideLeft" data-timing="8000">
-        <img src="./assets/img/10-49-25-501_950x510.jpg" />
-        <div class="title">This is where the title goes!</div>
-    </div>
     <div data-x="250" data-y="100" data-transition="slideLeft" data-timing="7000">
         <img src="./assets/img/13-10-33-151_950x510.jpg" />
         <img src="./assets/img/14-58-18-987_950x510.jpg" />
@@ -53,8 +49,6 @@
     <div data-x="0" data-y="0" data-group="2" data-transition="blend" data-timing="3000">
         <img src="./assets/img/23-24-39-512_950x510.jpg" />
     </div>
-    <div data-transition="slideLeft" >Hello World</div>
-    <a href="www.google.com" data-transition="slideLeft">Google</a>
 </div>
 
 </body>
