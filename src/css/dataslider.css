@@ -3,23 +3,33 @@
     position: absolute;
     top: 50%;
     margin-top: -20px;
+    height: 30px;
+    width: 20px;
+    z-index: 100;
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 40px;
+}
+.button-left {
+    left: 10px;
+    padding: 10px 15px 10px 15px;
+}
+.button-right {
+    right: 10px;
+    padding: 10px 10px 10px 20px;
+}
+.button-inner {
     height: 0px;
     width: 0px;
     font-size:0px;
     line-height:0px;
-    z-index: 100;
+    border-bottom:15px solid transparent;  /* left arrow slant */
+    border-top:15px solid transparent; /* right arrow slant */
 }
-.button-left {
-    border-bottom:20px solid transparent;  /* left arrow slant */
-    border-top:20px solid transparent; /* right arrow slant */
-    border-right:20px solid rgba(255,255,255,0.5); /* bottom, add background color here */
-    left: 10px;
+.button-left .button-inner {
+    border-right:15px solid rgba(255,255,255,0.5); /* bottom, add background color here */
 }
-.button-right {
-    border-bottom:20px solid transparent;  /* left arrow slant */
-    border-top:20px solid transparent; /* right arrow slant */
-    border-left:20px solid rgba(255,255,255,0.5); /* bottom, add background color here */
-    right: 10px;
+.button-right .button-inner {
+    border-left:15px solid rgba(255,255,255,0.5); /* bottom, add background color here */
 }
 .nav-wrap {
     position: absolute;
@@ -34,11 +44,27 @@
     padding: 5px;
     margin: 0px 3px;
     border-radius: 30px;
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(0,0,0,0.3);
     text-align: center;
     width: 16px;
     height: 16px;
     font-size: 12px;
     line-height: 16px;
     cursor: default;
+    color: #ddd;
+}
+.nav.nav-startstop {
+    width:30px;
+}
+.timerWrap {
+    position: relative;
+    display: block;
+    height: 5px;
+    width: 100%;
+    background-color: rgba(200,200,200,0.5);
+}
+.timerContent {
+    background-color: rgba(100,100,100,0.5);
+    height: 5px;
+    width: 25%;
 }

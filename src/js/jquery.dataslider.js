@@ -62,20 +62,34 @@
                 slidesTotal: slides.length,
                 width: $(root).width(),
                 height: $(root).height(),
-                buttonLeft: $('<div />').addClass('button button-left').appendTo(root),
-                buttonRight: $('<div />').addClass('button button-right').appendTo(root),
+                buttonLeft: $('<div><div class="button-inner"></div>').addClass('button button-left').appendTo(root),
+                buttonRight: $('<div><div class="button-inner"></div>').addClass('button button-right').appendTo(root),
                 nav: $('<ul />').addClass('nav-wrap').appendTo(root)
             }, slider);
             slider.root.addClass('slider').css( { 'position': "relative", 'overflow': "hidden", 'width': slider.width, 'height': slider.height } );
+            //Extend children for timer if used
+            if (slider.root.data("options").useProgressBar === true) {
+                var timerWrap = $('<div />').addClass('timer timerWrap').prependTo(root);
+                slider = $.extend( {
+                    timerWrap: timerWrap,
+                    timer: $('<div />').addClass('timer timerContent').appendTo(timerWrap)
+                }, slider);
+                slider.root.css( { 'height': slider.height + 5 });
+            }
             slider.wrap.css( { 'position': "relative", 'overflow': "hidden", 'width': slider.width, 'height': slider.height } );
             slider.buttonLeft.click(function() {
                 var from = slider.root.data("current");
-                //console.log(from);
                 slider.rotate(from, slider.findIndex(from-1));
+                if (slider.root.data("started") === false) {
+                    slider.stop();
+                }
             });
             slider.buttonRight.click(function() {
                 var from = slider.root.data("current");
                 slider.rotate(from, slider.findIndex(from+1));
+                if (slider.root.data("started") === false) {
+                    slider.stop();
+                }
             });
             //Handle button
             if (slider.root.data("options").useButtons === "hover" || slider.root.data("options").useButtons === true) {
@@ -95,14 +109,31 @@
             slider.root.data("current",to);
             //Apply animations
             var data = $(slider.slides[to]).data();
-            var transition = (data.transition === undefined)? $.data(slider.root, "defaultTransition"):data.transition;
+            var transition = (data.transition === undefined)?slider.root.data("options").defaultTransition:data.transition;
+            var timing = (data.timing === undefined)?slider.root.data("options").defaultTiming:data.timing;
             slider.animations[transition]($(slider.slides[from]), $(slider.slides[to]));
             from = to;
             to = slider.findIndex(to + 1);
-            data = $(slider.slides[to]).data();
-            //if (loop || cursor !== 0) {
-                slider.root.data("timer", window.setTimeout(function() { slider.rotate(from, to) }, data.timing ));
-            //}
+            if (slider.root.data("options").useProgressBar === true) {
+                slider.root.data("progressTiming", timing/1000);
+                slider.root.data("timer", window.setTimeout(function() {
+                    slider.progress(from, to, 0) }, slider.root.data("progressTiming") ));
+            }
+            else {
+                slider.root.data("timer", window.setTimeout(function() {
+                    slider.rotate(from, to) }, timing ));
+            }
+        },
+        progress: function(from, to, progress) {
+            slider.timer.css( { width: (progress + "%") } );
+            if (100 === Math.floor(progress)) {
+                slider.rotate(from, to);
+            }
+            else {
+                window.clearTimeout(slider.root.data("timer"));
+                slider.root.data("timer", window.setTimeout(function() {
+                    slider.progress(from, to, progress + 0.1) }, slider.root.data("progressTiming") ));
+            }
         },
         findIndex: function(cursor) {
             if (cursor === -1) cursor = slider.slidesTotal - 1;
@@ -122,10 +153,35 @@
         },
         buildNavs: function() {
             $.each(slider.slides, function(key, value) {
-                $('<li />').addClass('nav').appendTo(slider.nav).html(key+1).click(function() {
+                $('<li />').addClass('nav nav-'+ (key+1)).appendTo(slider.nav).html(key+1).click(function() {
                     slider.rotate(slider.root.data("current"), key);
                 });
             });
+            slider.root.data("startstop", $('<li />').addClass('nav nav-startstop').appendTo(slider.nav).html("stop").click(function() {
+                slider.startStop();
+            }));
+        },
+        startStop: function() {
+            if (slider.root.data("started") === true || slider.root.data("started") === undefined) {
+                slider.stop();
+            }
+            else {
+                slider.start();
+            }
+        },
+        stop: function() {
+            window.clearTimeout(slider.root.data("timer"));
+            slider.root.data("started", false);
+            if (slider.root.data("startstop") !== undefined) {
+                slider.root.data("startstop").html("start");
+            }
+        },
+        start: function() {
+            slider.root.data("started", true);
+            slider.rotate(slider.root.data("current"), slider.findIndex(slider.root.data("current") + 1));
+            if (slider.root.data("startstop") !== undefined) {
+                slider.root.data("startstop").html("stop");
+            }
         }
     }
     $.fn.dataslide = function(options) {
@@ -133,7 +189,10 @@
             useTitle: true,
             useButtons: "hover",
             useNavs: true,
+            useStartStop: true,
+            useProgressBar: true,
             defaultTransition: "none",
+            defaultTiming: 5000,
             autoPlay: true,
             loop: true,
             rememberLocation: false,
