@@ -1,3 +1,25 @@
+#slide {
+    position: relative;
+    padding: 10px;
+    box-shadow: 0px 0px 10px #c3c4c5;
+    margin: 50px auto;
+}
+#slide2 {
+    position: relative;
+    padding: 10px;
+    box-shadow: 0px 0px 10px #c3c4c5;
+    margin: 50px auto;
+}
+.title {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    padding: 10px;
+    height: auto;
+    background-color: rgba(0,0,0,0.3);
+    color: #fff;
+    width: 930px;
+}
 .button {
     display: none;
     position: absolute;
@@ -9,12 +31,15 @@
     background-color: rgba(0,0,0,0.3);
     border-radius: 40px;
 }
+.button:hover {
+    background-color: rgba(0,0,0,0.7);
+}
 .button-left {
-    left: 10px;
+    left: 20px;
     padding: 10px 15px 10px 15px;
 }
 .button-right {
-    right: 10px;
+    right: 20px;
     padding: 10px 10px 10px 20px;
 }
 .button-inner {
@@ -33,8 +58,8 @@
 }
 .nav-wrap {
     position: absolute;
-    bottom: 0px;
-    right: 10px;
+    top: 10px;
+    right: 20px;
     list-style: none inside none;
     z-index: 100;
 }
@@ -53,6 +78,10 @@
     cursor: default;
     color: #ddd;
 }
+.nav.nav-current {
+    background-color: rgba(0,0,0,0.7);
+    color: #fff;
+    }
 .nav.nav-startstop {
     width:30px;
 }
@@ -66,5 +95,5 @@
 .timerContent {
     background-color: rgba(100,100,100,0.5);
     height: 5px;
-    width: 25%;
+    width: 0%;
 }
