@@ -1,3 +1,4 @@
+/* global jQuery */
 ;(function( $ ) {
     "use strict";
     var slider = {
@@ -17,7 +18,6 @@
             },
             bounce: function(from, to) {
                 //Transition Strategy
-                console.log('processing slide');
                 from.css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, 'z-index': 10 });
                 to.css( { 'display' : "block", 'position': "absolute", 'width': slider.width, height: slider.height, 'top': 0, 'left': slider.width, 'z-index': 20 });
                 to.animate( { left: -slider.width }, "slow", "easeInOutBack", function() {
@@ -35,9 +35,9 @@
                 from.css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.width, height: slider.height, 'z-index' : 10 });
                 to.css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': slider.width, width: slider.width, height: slider.height, 'z-index' : 20 });
             },
-            slideAllLeft: function(from, to) {
+            //slideAllLeft: function(from, to) {
                 //Transition Strategy: Position everything next to each other, and scroll through all of them until the correct position is found.
-            },
+            //},
             blend: function(from, to) {
                 //Transition Strategy: Set the new slide to higher z-index and slowly increase its opacity to 100% so it filled up the underneath div.
                 from.css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.width, height: slider.height, 'z-index' : 10 });
@@ -117,11 +117,11 @@
             if (slider.root.data("options").useProgressBar === true) {
                 slider.root.data("progressTiming", timing/1000);
                 slider.root.data("timer", window.setTimeout(function() {
-                    slider.progress(from, to, 0) }, slider.root.data("progressTiming") ));
+                    slider.progress(from, to, 0); }, slider.root.data("progressTiming") ));
             }
             else {
                 slider.root.data("timer", window.setTimeout(function() {
-                    slider.rotate(from, to) }, timing ));
+                    slider.rotate(from, to); }, timing ));
             }
         },
         progress: function(from, to, progress) {
@@ -132,11 +132,13 @@
             else {
                 window.clearTimeout(slider.root.data("timer"));
                 slider.root.data("timer", window.setTimeout(function() {
-                    slider.progress(from, to, progress + 0.1) }, slider.root.data("progressTiming") ));
+                    slider.progress(from, to, progress + 0.1); }, slider.root.data("progressTiming") ));
             }
         },
         findIndex: function(cursor) {
-            if (cursor === -1) cursor = slider.slidesTotal - 1;
+            if (cursor === -1) {
+                cursor = slider.slidesTotal - 1;
+            }
             return (cursor % slider.slidesTotal);
         },
         addAnimation: function(funct) {
@@ -152,14 +154,18 @@
             slider.buttonRight.hide();
         },
         buildNavs: function() {
-            $.each(slider.slides, function(key, value) {
-                $('<li />').addClass('nav nav-'+ (key+1)).appendTo(slider.nav).html(key+1).click(function() {
-                    slider.rotate(slider.root.data("current"), key);
+            if (slider.root.data("options").useNavs === true) {
+                $.each(slider.slides, function(key) {
+                    $('<li />').addClass('nav nav-'+ (key+1)).appendTo(slider.nav).html(key+1).click(function() {
+                        slider.rotate(slider.root.data("current"), key);
+                    });
                 });
-            });
-            slider.root.data("startstop", $('<li />').addClass('nav nav-startstop').appendTo(slider.nav).html("stop").click(function() {
-                slider.startStop();
-            }));
+            }
+            if (slider.root.data("options").useStartStop === true) {
+                slider.root.data("startstop", $('<li />').addClass('nav nav-startstop').appendTo(slider.nav).html("stop").click(function() {
+                    slider.startStop();
+                }));
+            }
         },
         startStop: function() {
             if (slider.root.data("started") === true || slider.root.data("started") === undefined) {
@@ -183,22 +189,26 @@
                 slider.root.data("startstop").html("stop");
             }
         }
-    }
+    };
     $.fn.dataslide = function(options) {
-        var options = $.extend( {
+        options = $.extend( {
             useTitle: true,
-            useButtons: "hover",
-            useNavs: true,
-            useStartStop: true,
-            useProgressBar: true,
+            useButtons: "hover", //options "hover", "always", true, false
+            useNavs: false,
+            useStartStop: false,
+            useProgressBar: false,
             defaultTransition: "none",
             defaultTiming: 5000,
-            autoPlay: true,
-            loop: true,
-            rememberLocation: false,
-            hoverPause: false
+            autoPlay: true, //not used
+            loop: true, //not used
+            rememberLocation: false, //not used
+            hoverPause: false,
+            extraAnimations: false
         }, options);
         this.data("options", options);
+        if (options.extraAnimations !== false) {
+            slider.addAnimation(options.extraAnimations);
+        }
         $(this).children().css( { 'display': "none" });
         slider.init(this);
     };
