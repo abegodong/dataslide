@@ -72,10 +72,10 @@
                 slider.wrap.addClass('slider').css( { 'position': "relative", 'overflow': "hidden", 'width': slider.width, 'height': slider.height } );
                 //Extend children for timer if used
                 if (slider.root.data("options").useProgressBar === true) {
-                    var timerWrap = $('<div />').addClass('timer timerWrap').prependTo(root);
+                    var timerWrap = $('<div />').addClass('timer timer-wrap').prependTo(root);
                     slider = $.extend( {
                         timerWrap: timerWrap,
-                        timer: $('<div />').addClass('timer timerContent').appendTo(timerWrap)
+                        timer: $('<div />').addClass('timer timer-progress').appendTo(timerWrap)
                     }, slider);
                     slider.root.css( { 'height': slider.height + 5 });
                 }
@@ -114,8 +114,10 @@
                     slider.showButton();
                 }
                 slider.buildNavs();
-                if(slider.root.data("options").autoPlay === true) {
-                    slider.rotate(0, 0);
+                slider.buildThumbs();
+                slider.rotate(0, 0);
+                if(slider.root.data("options").autoPlay === false) {
+                    slider.stop(true);
                 }
                 //Handle navs
             },
@@ -130,12 +132,13 @@
                 var navs = slider.nav.children();
                 $(navs[from]).removeClass("nav-current");
                 $(navs[to]).addClass("nav-current");
+                if (slider.root.data("options").useThumbnails === true) {
+                    slider.rotateThumb(to);
+                }
                 if (from !== to || slider.root.data("progressTiming") === undefined) {
                     slider.animations[transition]($(slider.slides[from]), $(slider.slides[to]));
                     from = to;
                 }
-                //var imgs = $(slider.slides[to]).children("img");
-                //console.log(imgs.attr("src"));
                 to = slider.findIndex(to + 1);
                 slider.root.data("progressTiming", timing/1000);
                 if (slider.root.data("started") === undefined || slider.root.data("started") === true) {
@@ -200,6 +203,68 @@
                     }));
                 }
             },
+            buildThumbs: function() {
+                var thumbLocation = slider.root.data("options").useThumbnails;
+                var thumbsWrap = $("<div />").addClass("thumbs-wrap").appendTo(slider.root);
+                var thumbsWidth = 0;
+                var thumbsHeight = 0;
+                if (thumbLocation === true) {
+                    thumbLocation = "bottom";
+                }
+                if (thumbLocation !== false) {
+                    slider = $.extend( {
+                        thumbsWrap: thumbsWrap,
+                        thumbs: $('<ul />').addClass('thumbs').appendTo(thumbsWrap)
+                    }, slider);
+                    $.each(slider.slides, function(key, value) {
+                        var imgs = '';
+                        if ($(value).is("img") === true) {
+                            imgs = $(value);
+                        }
+                        else {
+                            imgs = $(value).find("img");
+                        }
+                        var html = '<img class="thumb-data" src ="';
+                        if (imgs.data("thumb") !== undefined && imgs.data("thumb") !== null) {
+                            html += imgs.data("thumb") + '" />';
+                        }
+                        else if (imgs !== undefined && imgs.attr("src") !== "null" && imgs.attr("src") !== undefined) {
+                            html += imgs.attr("src") + '" />';
+                        }
+                        else {
+                            html = '<div class="thumb-data">' + (key + 1) + '</div>';
+                        }
+                        var thumb = $('<li />').addClass('thumb thumb-'+ (key+1)).appendTo(slider.thumbs).html(html).click(function() {
+                            slider.rotate(slider.root.data("current"), key);
+                        });
+                        thumbsWidth += thumb.outerWidth(true);
+                        thumbsHeight += thumb.outerHeight(true);
+                    });
+                    //For top and bottom
+                    slider.root.css( { height: slider.root.height() + slider.thumbs.children().height() });
+                    slider.thumbs.css( { width: thumbsWidth });
+                    //For left and right
+                }
+            },
+            rotateThumb: function(to) {
+                var thumbs = slider.thumbs.children("li");
+                var toIndex = 0;
+                thumbs.each(function( key, value ) {
+                    $(value).removeClass("thumb-current");
+                    if ($(value).hasClass("thumb-" + (to + 1))) {
+                        toIndex = key;
+                        $(value).addClass("thumb-current");
+                    }
+                });
+                slider.thumbsWrap.animate({ scrollLeft: $(thumbs[toIndex]).position().left }, '500', 'swing', function() {
+                    for (var i = 0; i < toIndex; i++) {
+                        $(thumbs[i]).detach().appendTo(slider.thumbs);
+                    }
+                    //slider.thumbsWrap.animate({ scrollLeft:0 });
+                    slider.thumbsWrap.scrollLeft(0);
+                });
+                //Determine if circular or not
+            },
             startStop: function() {
                 if (slider.root.data("stopped") === undefined || slider.root.data("stopped") === false) {
                     slider.stop(true);
@@ -227,7 +292,7 @@
                 }
             }
         };
-        el.data("options", opts);
+        el.data("options", opts).addClass("slider-root");
         if (opts.extraAnimations !== false) {
             slider.addAnimation(opts.extraAnimations);
         }
@@ -238,15 +303,15 @@
         options = $.extend( {
             useTitle: true,
             useButtons: "hover", //options "hover", "always", true, false
-            useThumbnails: false,
             useNavs: true,
             useStartStop: true,
             useProgressBar: true,
+            useThumbnails: true, //options: "top", "left", "right", "bottom", true, false
             defaultTransition: "blend",
             defaultTiming: 5000,
             autoPlay: true,
-            loop: true, //not used
-            rememberLocation: false, //not used
+            loop: false, //not currently implemented
+            rememberLocation: false, //not currently implemented
             hoverPause: true,
             extraAnimations: false
         }, options);
