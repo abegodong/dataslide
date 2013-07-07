@@ -70,6 +70,7 @@
                 }, slider);
                 slides.addClass("slide-card").css( { 'display': "none" });
                 slider.wrap.addClass('slider').css( { 'position': "relative", 'overflow': "hidden", 'width': slider.width, 'height': slider.height } );
+                slider.buildThumbs();
                 //Extend children for timer if used
                 if (slider.root.data("options").useProgressBar === true) {
                     var timerWrap = $('<div />').addClass('timer timer-wrap').prependTo(root);
@@ -77,7 +78,7 @@
                         timerWrap: timerWrap,
                         timer: $('<div />').addClass('timer timer-progress').appendTo(timerWrap)
                     }, slider);
-                    slider.root.css( { 'height': slider.height + 5 });
+                    slider.root.css( { 'height': slider.root.height() + slider.timerWrap.outerHeight(true) });
                 }
                 slider.wrap.css( { 'position': "relative", 'overflow': "hidden", 'width': slider.width, 'height': slider.height } );
                 slider.buttonLeft.click(function() {
@@ -114,7 +115,6 @@
                     slider.showButton();
                 }
                 slider.buildNavs();
-                slider.buildThumbs();
                 slider.rotate(0, 0);
                 if(slider.root.data("options").autoPlay === false) {
                     slider.stop(true);
@@ -132,7 +132,7 @@
                 var navs = slider.nav.children();
                 $(navs[from]).removeClass("nav-current");
                 $(navs[to]).addClass("nav-current");
-                if (slider.root.data("options").useThumbnails === true) {
+                if (slider.root.data("options").useThumbnails !== false) {
                     slider.rotateThumb(to);
                 }
                 if (from !== to || slider.root.data("progressTiming") === undefined) {
@@ -205,13 +205,20 @@
             },
             buildThumbs: function() {
                 var thumbLocation = slider.root.data("options").useThumbnails;
-                var thumbsWrap = $("<div />").addClass("thumbs-wrap").appendTo(slider.root);
+                var thumbsWrap = "";
                 var thumbsWidth = 0;
                 var thumbsHeight = 0;
+                var lastThumb = "";
                 if (thumbLocation === true) {
                     thumbLocation = "bottom";
                 }
                 if (thumbLocation !== false) {
+                    if (thumbLocation === "bottom" || thumbLocation === "right") {
+                        thumbsWrap = $("<div />").addClass("thumbs-wrap").appendTo(slider.root);
+                    }
+                    else {
+                        thumbsWrap = $("<div />").addClass("thumbs-wrap").prependTo(slider.root);
+                    }
                     slider = $.extend( {
                         thumbsWrap: thumbsWrap,
                         thumbs: $('<ul />').addClass('thumbs').appendTo(thumbsWrap)
@@ -234,34 +241,62 @@
                         else {
                             html = '<div class="thumb-data">' + (key + 1) + '</div>';
                         }
-                        var thumb = $('<li />').addClass('thumb thumb-'+ (key+1)).appendTo(slider.thumbs).html(html).click(function() {
+                        lastThumb = $('<li />').addClass('thumb thumb-'+ (key+1)).appendTo(slider.thumbs).html(html).click(function() {
                             slider.rotate(slider.root.data("current"), key);
                         });
-                        thumbsWidth += thumb.outerWidth(true);
-                        thumbsHeight += thumb.outerHeight(true);
+                        thumbsWidth += lastThumb.outerWidth(true);
+                        thumbsHeight += lastThumb.outerHeight(true);
                     });
-                    //For top and bottom
-                    slider.root.css( { height: slider.root.height() + slider.thumbs.children().height() });
-                    slider.thumbs.css( { width: thumbsWidth });
+                    slider.thumbsWrap.addClass("thumbs-wrap-" + thumbLocation);
+                    if (thumbLocation === "top" || thumbLocation === "bottom") {
+                        slider.root.css( { height: slider.root.height() + lastThumb.outerHeight(true) });
+                        slider.thumbsWrap.css( { width: slider.wrap.width(), height: lastThumb.outerHeight(true) } );
+                        slider.thumbs.css( { width: thumbsWidth });
+                    }
+                    else {
+                        if (slider.root.data("options").useButtons !== false) {
+                            if (thumbLocation === "left") {
+                                slider.buttonLeft.css( { left: parseInt(slider.buttonLeft.css("left"), 10) + lastThumb.outerWidth(true) });
+                            }
+                            else {
+                                slider.buttonRight.css( { right: parseInt(slider.buttonRight.css("right"), 10) + lastThumb.outerWidth(true) });
+                            }
+                        }
+                        slider.root.css ({ width: slider.root.width() + lastThumb.outerWidth(true) });
+                        slider.thumbsWrap.css( { height: slider.wrap.height(), width: lastThumb.outerWidth(true) } );
+                        slider.thumbs.css ({ height: thumbsHeight });
+                    }
                     //For left and right
                 }
             },
             rotateThumb: function(to) {
                 var thumbs = slider.thumbs.children("li");
                 var toIndex = 0;
-                thumbs.each(function( key, value ) {
+                var animateOptions = { };
+                 thumbs.each(function( key, value ) {
                     $(value).removeClass("thumb-current");
                     if ($(value).hasClass("thumb-" + (to + 1))) {
                         toIndex = key;
                         $(value).addClass("thumb-current");
                     }
                 });
-                slider.thumbsWrap.animate({ scrollLeft: $(thumbs[toIndex]).position().left }, '500', 'swing', function() {
+                if ($.inArray(slider.root.data("options").useThumbnails, [ "top", "bottom" ]) !== -1) {
+                    animateOptions = { scrollLeft: $(thumbs[toIndex]).position().left };
+                }
+                else {
+                    animateOptions = { scrollTop: $(thumbs[toIndex]).position().top };
+                }
+                slider.thumbsWrap.animate(animateOptions, '500', 'swing', function() {
                     for (var i = 0; i < toIndex; i++) {
                         $(thumbs[i]).detach().appendTo(slider.thumbs);
                     }
                     //slider.thumbsWrap.animate({ scrollLeft:0 });
-                    slider.thumbsWrap.scrollLeft(0);
+                    if ($.inArray(slider.root.data("options").useThumbnails, [ "top", "bottom" ]) !== -1) {
+                        slider.thumbsWrap.scrollLeft(0);
+                    }
+                    else {
+                        slider.thumbsWrap.scrollTop(0);
+                    }
                 });
                 //Determine if circular or not
             },
@@ -302,11 +337,11 @@
     $.fn.dataslide = function(options) {
         options = $.extend( {
             useTitle: true,
-            useButtons: "hover", //options "hover", "always", true, false
-            useNavs: true,
-            useStartStop: true,
+            useButtons: "always", //options "hover", "always", true, false
+            useNavs: false,
+            useStartStop: false,
             useProgressBar: true,
-            useThumbnails: true, //options: "top", "left", "right", "bottom", true, false
+            useThumbnails: "right", //options: "top", "left", "right", "bottom", true, false
             defaultTransition: "blend",
             defaultTiming: 5000,
             autoPlay: true,
