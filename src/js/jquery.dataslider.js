@@ -80,35 +80,64 @@
                 },
                 //CSS 3 Transformation
                 cssRotate: function(object, from, to) {
-                    $(object[from]).css( { '-webkit-animation': "rotate360 1s 16 ease",
-                        '-moz-animation': "rotate360 1s 16 ease",
-                        '-o-animation': "rotate360 1s 16 ease",
-                        'animation': "rotate360 is 16 ease" })
-                        .fadeOut('slow', function() {
-                            $(object[from]).removeClass("current");
-                            $(object[to]).css( { '-webkit-animation': "rotate360 1s 16 ease",
-                                '-moz-animation': "rotate360 1s 16 ease",
-                                '-o-animation': "rotate360 1s 16 ease",
-                                'animation': "rotate360 is 16 ease" }).fadeIn('slow', function() {
-                                    $(object[to]).addClass("current");
-                                    slider.animations.showHide(object, from, to);
-                                })
+                    $(object[from]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 10,'-webkit-animation': "rotate360 1s 16 ease",
+                        '-moz-animation': "rotate360 1s 1 ease",
+                        '-o-animation': "rotate360 1s 1 ease",
+                        'animation': "rotate360 is 1 ease" });
+                    $(object[to]).css( { 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 20, '-webkit-animation': "rotate360 1s 16 ease",
+                        '-moz-animation': "rotate360 1s 1 ease",
+                        '-o-animation': "rotate360 1s 1 ease",
+                        'animation': "rotate360 is 1 ease" });
+                    $(object[to]).fadeIn(1000, function() {
+                        slider.animations.showHide(object, from, to);
+                    });
+                },
+                cssScale: function(object, from, to, redirect) {
+                    redirect = (redirect === undefined)?false:redirect;
+                    //do left slide only if to > from, or to = 0 if from is max
+                    if (redirect === true || to >= from || (to === 0 && from === (slider.slides.length - 1))) {
+                        $(object[from]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 10,
+                            '-webkit-animation': "scaleout 1s 16 ease",
+                            '-moz-animation': "scaleout 1s 1 ease",
+                            '-o-animation': "scaleout 1s 1 ease",
+                            'animation': "scaleout is 1 ease" });
+                        $(object[to]).css( { 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 20
+                             });
+                        $(object[to]).fadeIn(1000, function() {
+                            slider.animations.showHide(object, from, to);
                         });
+                    }
+                    else {
+                        slider.animations.cssScaleIn(object, from, to, true);
+                    }
+                },
+                cssScaleIn: function(object, from, to, redirect) {
+                    redirect = (redirect === undefined)?false:redirect;
+                    //do left slide only if to > from, or to = 0 if from is max
+                    if (redirect === true || to >= from || (to === 0 && from === (slider.slides.length - 1))) {
+                        $(object[from]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 10 });
+                        $(object[to]).css( { 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 20,
+                            '-webkit-animation': "scalein 1s 16 ease",
+                            '-moz-animation': "scalein 1s 1 ease",
+                            '-o-animation': "scalein 1s 1 ease",
+                            'animation': "scalein is 1 ease" });
+                        $(object[to]).fadeIn(1000, function() {
+                            slider.animations.showHide(object, from, to);
+                        });
+                    }
+                    else {
+                        slider.animations.cssScale(object, from, to, true);
+                    }
                 },
                 cssZoom: function(object, from, to) {
-                    $(object[from]).css( { '-webkit-animation': "zoomInPhoto 1s 16 ease",
-                        '-moz-animation': "zoomInPhoto 1s 16 ease",
-                        '-o-animation': "zoomInPhoto 1s 16 ease",
-                        'animation': "zoomInPhoto is 16 ease" })
-                        .fadeOut('slow', function() {
+                    $(object[from]).css( { '-webkit-animation': "zoomInPhoto 3s infinite ease",
+                        '-moz-animation': "zoomInPhoto 3s infinite ease",
+                        '-o-animation': "zoomInPhoto 3s infinite ease",
+                        'animation': "zoomInPhoto 3s infinite ease" })
+                        .fadeOut('3000', function() {
                             $(object[from]).removeClass("current");
-                            $(object[to]).css( { '-webkit-animation': "zoomInPhoto 1s 16 ease",
-                                '-moz-animation': "zoomInPhoto 1s 16 ease",
-                                '-o-animation': "zoomInPhoto 1s 16 ease",
-                                'animation': "zoomInPhoto is 16 ease" }).fadeIn('slow', function() {
-                                    $(object[to]).addClass("current");
-                                    slider.animations.showHide(object, from, to);
-                                })
+                            $(object[to]).addClass("current");
+                            slider.animations.showHide(object, from, to);
                         });
                 },
                 cssFade: function(object, from, to) {
@@ -486,15 +515,15 @@
     $.fn.dataslide = function(options) {
         options = $.extend( {
             useTitle: true,
-            useButtons: false, //options "hover", "always", true, false
+            useButtons: true, //options "hover", "always", true, false
             centerButtons: true,
-            useNavs: false,
-            useStartStop: false,
-            useProgressBar: false,
+            useNavs: true,
+            useStartStop: true,
+            useProgressBar: true,
             useThumbnails: false, //options: "top", "left", "right", "bottom", true, false
             circularThumbnails: true,
             useKeyboard: true,
-            defaultTransition: "blend",
+            defaultTransition: "slideLeft",
             defaultTiming: 5000,
             autoPlay: true,
             loop: true,
@@ -502,7 +531,7 @@
             hoverPause: false,
             extraAnimations: false,
             responsive: true,
-            fullscreen: true
+            fullscreen: false
         }, options);
         this.each(function () {
             new Dataslider($(this), options);

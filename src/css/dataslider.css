@@ -198,39 +198,78 @@ body.dataslider-fullscreen {
     to { opacity: 1; }
 }
 /* Rotate */
-@-webkit-keyframes rotate360 {
-    from { -webkit-transform: rotate(4deg) scale(1) skew(1deg) translate(10px); }
-    to { -webkit-transform: rotate(360deg) scale(1) skew(1deg) translate(0px); }
+@keyframes rotate360 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 @-moz-keyframes rotate360 {
-    from { -moz-transform: rotate(4deg) scale(1) skew(1deg) translate(10px); }
-    to { -moz-transform: rotate(360deg) scale(1) skew(1deg) translate(0px); }
+    0% { -moz-transform: rotate(0deg); }
+    100% { -moz-transform: rotate(360deg); }
 }
-@-o-keyframes rotate360 {
-    from { -o-transform: rotate(4deg) scale(1) skew(1deg) translate(10px); }
-    to { -o-transform: rotate(360deg) scale(1) skew(1deg) translate(0px); }
+@-ms-keyframes rotate360 {
+    0% { -ms-transform: rotate(0deg); }
+    100% { -ms-transform: rotate(360deg); }
 }
+@-webkit-keyframes rotate360 {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+/* Scale */
+@keyframes scaleout {
+    0% { transform: scale(1); }
+    100% { transform: scale(10); }
+}
+@-moz-keyframes scaleout {
+    0% { -moz-transform: scale(1); }
+    100% { -moz-transform: scale(10); }
+}
+@-ms-keyframes scaleout {
+    0% { -ms-transform: scale(1); }
+    100% { -ms-transform: scale(10); }
+}
+@-webkit-keyframes scaleout {
+    0% { -webkit-transform: scale(1); }
+    100% { -webkit-transform: scale(10); }
+}
+@keyframes scalein {
+    0% { transform: scale(10); }
+    100% { transform: scale(1); }
+}
+@-moz-keyframes scalein {
+    0% { -moz-transform: scale(10); }
+    100% { -moz-transform: scale(1); }
+}
+@-ms-keyframes scalein {
+    0% { -ms-transform: scale(10); }
+    100% { -ms-transform: scale(1); }
+}
+@-webkit-keyframes scalein {
+    0% { -webkit-transform: scale(10); }
+    100% { -webkit-transform: scale(1); }
+}
+
 /* Zoom In */
 @keyframes zoomInPhoto{
-    0% {width:100%; height:100%; opacity:0.3;}
-    50% {width:150%; height:150%; opacity:0.7}
-    100% {width:200%; height:200%; opacity:1;}
+    0% {width:100%; height:100%; opacity:1;}
+    50% {width:500%; height:500%; opacity:0.5}
+    100% {width:1000%; height:1000%; opacity:0;}
 }
 
 @-moz-keyframes zoomInPhoto{
-    0% {width:100%; height:100%; opacity:0.3;}
-    50% {width:150%; height:150%; opacity:0.7}
-    100% {width:200%; height:200%; opacity:1;}
+    0% {width:100%; height:100%; opacity:1;}
+    50% {width:500%; height:500%; opacity:0.5}
+    100% {width:1000%; height:1000%; opacity:0;}
 }
 
 @-webkit-keyframes zoomInPhoto{
-    0% {width:100%; height:100%; opacity:0.3;}
-    50% {width:150%; height:150%; opacity:0.7}
-    100% {width:200%; height:200%; opacity:1;}
+    0% {width:100%; height:100%; opacity:1;}
+    50% {width:500%; height:500%; opacity:0.5}
+    100% {width:1000%; height:1000%; opacity:0;}
 }
 
 @-o-keyframes zoomInPhoto{
-    0% {width:100%; height:100%; opacity:0.3;}
-    50% {width:150%; height:150%; opacity:0.7}
-    100% {width:200%; height:200%; opacity:1;}
+    0% {width:100%; height:100%; opacity:1;}
+    50% {width:500%; height:500%; opacity:0.5}
+    100% {width:1000%; height:1000%; opacity:0;}
 }
+/* Scale */
