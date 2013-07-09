@@ -8,48 +8,67 @@
     <script type="text/javascript" src="../src/js/jquery.dataslider.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#slide").dataslide();
+            $("#slide").dataslide( {
+                useTitle: true,
+                useButtons: true, //options "hover", "always", true, false
+                centerButtons: true,
+                useNavs: true,
+                useStartStop: true,
+                useProgressBar: true,
+                useThumbnails: "left", //options: "top", "left", "right", "bottom", true, false
+                circularThumbnails: false,
+                useKeyboard: true,
+                defaultTransition: "slideLeft",
+                defaultTiming: 5000,
+                autoPlay: true,
+                loop: true,
+                rememberLocation: false, //not currently implemented
+                hoverPause: true,
+                extraAnimations: false,
+                responsive: true,
+                fullscreen: fal
+            });
             //$("#slide2").dataslide( { useButtons: false } );
         });
     </script>
 </head>
 <body>
-<!--
 <div id="slide">
-    <div data-x="0" data-y="0" data-group="1" data-transition="none" data-timing="3000">
+    <div data-x="0" data-y="0" data-group="1" data-transition="cssScale" data-timing="3000">
         <img src="./assets/img/10-49-25-501_950x510.jpg" />
         <div class="title">This is where the title goes!</div>
     </div>
-    <div data-x="250" data-y="100" data-transition="slideLeft" data-timing="3000">
+    <div data-x="250" data-y="100" data-transition="cssScale" data-timing="3000">
         <img src="./assets/img/13-10-33-151_950x510.jpg" />
         <div class="title">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
     </div>
-    <div data-x="250" data-y="100" data-transition="slideLeft" data-timing="3000">
+    <div data-x="250" data-y="100" data-transition="cssScale" data-timing="3000">
         <a href="http://www.google.com">
             <img src="./assets/img/13-11-18-161_950x510.jpg" />
             <div class="title">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
         </a>
     </div>
-    <div data-x="0" data-y="0" data-group="2" data-transition="blend" data-timing="3000">
+    <div data-x="0" data-y="0" data-group="2" data-transition="cssScale" data-timing="3000">
         <img src="./assets/img/14-58-18-987_950x510.jpg" />
         <div class="title">This is where the title goes!</div>
     </div>
-    <div data-x="0" data-y="0" data-group="2" data-transition="fade" data-timing="3000">
+    <div data-x="0" data-y="0" data-group="2" data-transition="cssScale" data-timing="3000">
         <img src="./assets/img/23-24-39-512_950x510.jpg" />
         <div class="title">This is where the title goes!</div>
     </div>
-    <div data-transition="fade" >Hello World</div>
-    <img src="./assets/img/13-10-33-151_950x510.jpg" />
-    <a href="www.google.com" data-transition="fade">Google</a>
+    <div data-transition="cssScale"><h1>Hello World</h1><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></div>
+    <img data-transition="cssScale" src="./assets/img/13-10-33-151_950x510.jpg" />
+    <a href="www.google.com" data-transition="cssScale">Google</a>
+</div>
+<!--
+<div id="slide">
+    <img src="./assets/img/10-49-25-501_950x510.jpg" data-transition="flipRight" />
+    <img src="./assets/img/13-10-33-151_950x510.jpg" data-transition="flipRight" />
+    <img src="./assets/img/13-11-18-161_950x510.jpg" data-transition="flipRight" />
+    <img src="./assets/img/14-58-18-987_950x510.jpg" data-transition="flipRight" />
+    <img src="./assets/img/23-24-39-512_950x510.jpg" data-transition="flipRight" />
+    <img src="./assets/img/13-10-33-151_950x510.jpg" data-transition="flipRight" />
 </div>
 -->
-<div id="slide">
-    <img src="./assets/img/10-49-25-501_950x510.jpg" data-transition="cssScale" />
-    <img src="./assets/img/13-10-33-151_950x510.jpg" data-transition="cssScale" />
-    <img src="./assets/img/13-11-18-161_950x510.jpg" data-transition="cssScale" />
-    <img src="./assets/img/14-58-18-987_950x510.jpg" data-transition="cssScale" />
-    <img src="./assets/img/23-24-39-512_950x510.jpg" data-transition="cssScale" />
-    <img src="./assets/img/13-10-33-151_950x510.jpg" data-transition="cssScale" />
-</div>
 </body>
 </html>

@@ -83,11 +83,11 @@
                     $(object[from]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 10,'-webkit-animation': "rotate360 1s 16 ease",
                         '-moz-animation': "rotate360 1s 1 ease",
                         '-o-animation': "rotate360 1s 1 ease",
-                        'animation': "rotate360 is 1 ease" });
+                        'animation': "rotate360 1s 1 ease" });
                     $(object[to]).css( { 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 20, '-webkit-animation': "rotate360 1s 16 ease",
                         '-moz-animation': "rotate360 1s 1 ease",
                         '-o-animation': "rotate360 1s 1 ease",
-                        'animation': "rotate360 is 1 ease" });
+                        'animation': "rotate360 1s 1 ease" });
                     $(object[to]).fadeIn(1000, function() {
                         slider.animations.showHide(object, from, to);
                     });
@@ -96,16 +96,20 @@
                     redirect = (redirect === undefined)?false:redirect;
                     //do left slide only if to > from, or to = 0 if from is max
                     if (redirect === true || to >= from || (to === 0 && from === (slider.slides.length - 1))) {
-                        $(object[from]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 10,
-                            '-webkit-animation': "scaleout 1s 16 ease",
+                        $(object[from]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 20,
+                            '-webkit-animation': "scaleout 1s 1 ease",
                             '-moz-animation': "scaleout 1s 1 ease",
                             '-o-animation': "scaleout 1s 1 ease",
-                            'animation': "scaleout is 1 ease" });
-                        $(object[to]).css( { 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 20
+                            'animation': "scaleout 1s 1 ease" });
+                        $(object[to]).css( { 'display': "block",'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 10,
+                            '-webkit-animation': "scaleoutComp 1s 1 ease",
+                            '-moz-animation': "scaleoutComp 1s 1 ease",
+                            '-o-animation': "scaleoutComp 1s 1 ease",
+                            'animation': "scaleoutComp 1s 1 ease"
                              });
-                        $(object[to]).fadeIn(1000, function() {
-                            slider.animations.showHide(object, from, to);
-                        });
+                        setTimeout(function() {
+                            slider.animations.showHide(object, from, to, redirect);
+                        }, 1000)
                     }
                     else {
                         slider.animations.cssScaleIn(object, from, to, true);
@@ -115,19 +119,38 @@
                     redirect = (redirect === undefined)?false:redirect;
                     //do left slide only if to > from, or to = 0 if from is max
                     if (redirect === true || to >= from || (to === 0 && from === (slider.slides.length - 1))) {
-                        $(object[from]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 10 });
-                        $(object[to]).css( { 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 20,
-                            '-webkit-animation': "scalein 1s 16 ease",
+                        $(object[from]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 10,
+                            '-webkit-animation': "scaleinComp 1s 1 ease",
+                            '-moz-animation': "scaleinComp 1s 1 ease",
+                            '-o-animation': "scaleinComp 1s 1 ease",
+                            'animation': "scaleinComp 1s 1 ease"
+                        });
+                        $(object[to]).css( { 'display': "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 20,
+                            '-webkit-animation': "scalein 1s 1 ease",
                             '-moz-animation': "scalein 1s 1 ease",
                             '-o-animation': "scalein 1s 1 ease",
-                            'animation': "scalein is 1 ease" });
-                        $(object[to]).fadeIn(1000, function() {
-                            slider.animations.showHide(object, from, to);
-                        });
+                            'animation': "scalein 1s 1 ease" });
+                        setTimeout(function() {
+                            slider.animations.showHide(object, from, to, redirect);
+                        }, 1000)
                     }
                     else {
                         slider.animations.cssScale(object, from, to, true);
                     }
+                },
+                cssFlip: function(object, from, to, redirect) {
+                    redirect = (redirect === undefined)?false:redirect;
+                        $(object[from]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 10,
+                            '-webkit-animation': "flipRight 1s 1 ease",
+                            'animation': "flipRight 1s 1 ease" });
+                        $(object[to]).css( { 'display' : "block", 'position': "absolute", 'top': 0, 'left': 0, width: slider.wrap.width(), height: slider.wrap.height(), 'z-index' : 20,
+                            '-webkit-animation': "flipRightComp 1s 1 ease",
+                            'animation': "flipRightComp 1s 1 ease"
+                        });
+                    setTimeout(function() {
+                        slider.animations.showHide(object, from, to, redirect);
+                    }, 1000)
+
                 },
                 cssZoom: function(object, from, to) {
                     $(object[from]).css( { '-webkit-animation': "zoomInPhoto 3s infinite ease",
@@ -224,9 +247,12 @@
                 if (slider.root.data("options").useThumbnails !== false) {
                     slider.rotateThumb(to);
                 }
-                if (from !== to || slider.root.data("progressTiming") === undefined) {
+                if (from !== to) {
                     slider.animations[transition](slider.slides, from, to);
                     from = to;
+                }
+                else {
+                    slider.animations["showHide"](slider.slides, from, to);
                 }
                 to = slider.findIndex(to + 1);
                 slider.root.data("progressTiming", timing/1000);
@@ -520,15 +546,15 @@
             useNavs: true,
             useStartStop: true,
             useProgressBar: true,
-            useThumbnails: false, //options: "top", "left", "right", "bottom", true, false
-            circularThumbnails: true,
+            useThumbnails: "left", //options: "top", "left", "right", "bottom", true, false
+            circularThumbnails: false,
             useKeyboard: true,
             defaultTransition: "slideLeft",
             defaultTiming: 5000,
             autoPlay: true,
             loop: true,
             rememberLocation: false, //not currently implemented
-            hoverPause: false,
+            hoverPause: true,
             extraAnimations: false,
             responsive: true,
             fullscreen: false
